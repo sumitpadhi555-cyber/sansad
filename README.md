@@ -1,4 +1,32 @@
-# sansad
+# Sansad Showdown — The Great Kursi Fight
+
+A small, browser-based 3D political-satire arena brawler. Choose a debater and arena, then fight a CPU opponent, practice, or play a local two-player match. It uses Three.js from jsDelivr and procedural 3D scenery and character models.
+
+## Run locally
+
+From this directory, start any static HTTP server, for example:
+
+```sh
+python3 -m http.server 8000
+```
+
+Open <http://localhost:8000> in a modern browser. An internet connection is required to load Three.js and the web fonts from their CDNs. No build step or package installation is needed. The supplied `start.sh` is an OMGithub runtime entrypoint and expects its `RUNTIME_DIR` environment variable; it is not the general-purpose local run command above.
+
+## Controls
+
+- **Player 1:** WASD to move, J to punch, K to kick, L or Shift to block, Space to dodge, E for a special, Esc to pause.
+- **Player 2 (Local 1v1):** Arrow keys to move, numpad 1/2 to punch/kick, numpad 3 or Right Shift to block, Enter to dodge, numpad 0 for a special.
+- **Touch:** On-screen movement and action buttons are available on touch devices.
+
+## What's implemented
+
+- Nine character selections, three arenas, and a 3D fight scene with health, stamina, timer, synthesized sound effects, CPU opponent, pause/results panels, and responsive touch controls.
+- Quick Fight, Story, Tournament, Local 1v1, and Training selections. Story and Tournament provide lightweight sequential CPU fights rather than a full narrative or competitive bracket.
+- Online Multiplayer appears in the mode menu but is not connected to matchmaking; selecting it displays an unavailable notice.
+
+## Limitations
+
+This is a web prototype, not a finished mobile release. There is no native Android project, Android 15 configuration, signed APK, online backend, or verified controller support. Characters, crowd, arenas, and sound are procedural/simple prototype assets rather than production-quality authored assets. Browser support and performance vary by device; no mobile-device optimization or release build has been verified.
 
 <!-- omgithub:readme:start -->
 ## 🚀 Build, play, and remix with OMGithub

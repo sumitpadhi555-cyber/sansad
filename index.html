@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#101114" />
+  <title>Sansad Showdown — The Great Kursi Fight</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}
+  </script>
+</head>
+<body>
+  <main id="game-shell">
+    <canvas id="scene" aria-label="3D political satire fighting game arena"></canvas>
+    <div class="film-grain"></div>
+    <div class="vignette"></div>
+    <div id="loading" class="loading"><div class="crest">SS</div><div class="loading-title">SETTING THE STAGE</div><div class="load-track"><i></i></div><small>POLITICS IS A CONTACT SPORT</small></div>
+
+    <section id="main-menu" class="screen visible">
+      <header class="topbar"><div class="brand"><div class="brand-mark">SS</div><div><span class="brand-name">SANSAD <b>SHOWDOWN</b></span><small>THE GREAT KURSI FIGHT</small></div></div><div class="top-right"><span class="edition">A SATIRICAL ARENA BRAWLER</span><button class="icon-btn" id="sound-toggle" title="Toggle sound">♫ <span>SOUND ON</span></button></div></header>
+      <div class="hero-copy"><div class="eyebrow"><i></i> THE FLOOR IS YOURS</div><h1>MAKE YOUR<br><em>POINT.</em></h1><p>Big speeches. Bigger swings. Settle the debate<br>where every argument lands.</p><div class="hero-actions"><button class="primary-btn" id="play-btn">ENTER THE ARENA <span>→</span></button><button class="secondary-btn" id="how-btn">HOW TO PLAY <span>＋</span></button></div><div class="platform-note">⚡ LOCAL PLAY · KEYBOARD + TOUCH · NO DOWNLOAD NEEDED</div></div>
+      <div class="main-character-label"><span class="label-line"></span><span>THE HOUSE IS IN SESSION</span><small>09 DEBATES. 01 KURSI.</small></div>
+      <footer class="menu-footer"><span>AN ORIGINAL SATIRICAL GAME · NOT AFFILIATED WITH ANY POLITICAL PARTY</span><span>BUILD 1.0 <b>◆</b> WEB EDITION</span></footer>
+    </section>
+
+    <section id="select-menu" class="screen">
+      <header class="subhead"><button class="back-btn" data-back="main-menu">← BACK</button><div class="step-label">01 / 03 <span>·</span> CHOOSE YOUR DEBATER</div><button class="icon-btn compact" id="select-sound">♫</button></header>
+      <div class="select-heading"><div><div class="eyebrow"><i></i> YOUR SIDE OF THE AISLE</div><h2>CHOOSE YOUR <em>CHAMPION</em></h2></div><div class="mode-switch"><span>MODE</span><select id="mode-select"><option value="quick">Quick Fight</option><option value="story">Story Mode</option><option value="tournament">Tournament</option><option value="local">Local 1v1</option><option value="online">Online Multiplayer</option><option value="training">Training</option></select></div></div>
+      <div id="character-grid" class="character-grid"></div>
+      <div class="selection-bottom"><div class="selection-hint" id="selection-hint">SELECT A DEBATER TO SEE THEIR FIGHTING STYLE</div><button class="primary-btn" id="continue-btn" disabled>CONTINUE <span>→</span></button></div>
+      <div id="char-detail" class="char-detail"><span class="detail-kicker">FIGHTING STYLE</span><strong>—</strong><span>—</span></div>
+    </section>
+
+    <section id="arena-menu" class="screen">
+      <header class="subhead"><button class="back-btn" data-back="select-menu">← BACK</button><div class="step-label">02 / 03 <span>·</span> PICK YOUR ARENA</div><button class="icon-btn compact" id="arena-sound">♫</button></header>
+      <div class="arena-heading"><div class="eyebrow"><i></i> THE FLOOR IS OPEN</div><h2>WHERE WILL YOU <em>STAND?</em></h2></div>
+      <div class="arena-grid" id="arena-grid"></div>
+      <div class="arena-bottom"><div class="arena-note">Every arena has its own atmosphere. The rules? Mostly.</div><button class="primary-btn" id="fight-btn">FIGHT! <span>→</span></button></div>
+    </section>
+
+    <section id="fight-ui" class="fight-ui">
+      <div class="fight-top"><div class="fighter-hud left"><div class="hud-name" id="hud-name-1">DEBATER ONE</div><div class="bar-frame"><div class="health-bar" id="health-1"></div></div><div class="stamina-frame"><div class="stamina-bar" id="stamina-1"></div></div><div class="hud-caption" id="hud-caption-1">THE HOUSE · PLAYER 1</div></div><div class="round-center"><div class="round-label">ROUND <b>01</b></div><div class="timer" id="timer">90</div><div class="round-rule">NO FILIBUSTERING</div></div><div class="fighter-hud right"><div class="hud-name" id="hud-name-2">OPPOSITION</div><div class="bar-frame"><div class="health-bar" id="health-2"></div></div><div class="stamina-frame"><div class="stamina-bar" id="stamina-2"></div></div><div class="hud-caption" id="hud-caption-2">THE OPPOSITION · CPU</div></div><button class="pause-btn" id="pause-btn">Ⅱ</button></div>
+      <div class="fight-toast" id="fight-toast"></div>
+      <div class="mobile-controls" id="mobile-controls"><div class="move-pad"><button data-action="up">▲</button><div><button data-action="left">◀</button><button data-action="down">▼</button><button data-action="right">▶</button></div></div><div class="action-pad"><button data-action="block" class="act block">GUARD</button><button data-action="dodge" class="act dodge">DODGE</button><button data-action="punch" class="act punch">PUNCH</button><button data-action="kick" class="act kick">KICK</button><button data-action="special" class="act special">SPECIAL</button></div></div>
+    </section>
+
+    <section id="pause-panel" class="modal-screen"><div class="modal-card"><div class="eyebrow"><i></i> TIME OUT</div><h2>TAKE A <em>BREATHER.</em></h2><p>Even parliament needs a recess.</p><button class="primary-btn" id="resume-btn">BACK TO THE FLOOR <span>→</span></button><button class="text-btn" id="restart-btn">RESTART MATCH</button><button class="text-btn" id="quit-btn">RETURN TO MENU</button></div></section>
+    <section id="result-panel" class="modal-screen"><div class="modal-card result-card"><div class="eyebrow"><i></i> THE HOUSE HAS DECIDED</div><h2 id="result-title">POINT <em>MADE.</em></h2><p id="result-copy">A spirited debate from both sides.</p><div class="result-score"><span>WINNER</span><strong id="winner-name">—</strong><small id="result-record">MATCH COMPLETE</small></div><button class="primary-btn" id="rematch-btn">RUN IT BACK <span>→</span></button><button class="text-btn" id="result-menu-btn">MAIN MENU</button></div></section>
+    <section id="how-panel" class="modal-screen"><div class="modal-card how-card"><button class="modal-close" id="how-close">×</button><div class="eyebrow"><i></i> THE RULES OF ENGAGEMENT</div><h2>FIGHT FAIR-ish.</h2><div class="controls-list"><div><kbd>W A S D</kbd><span>Move around the arena</span></div><div><kbd>J</kbd><span>Quick punch</span></div><div><kbd>K</kbd><span>Heavy kick</span></div><div><kbd>L / SHIFT</kbd><span>Block incoming attacks</span></div><div><kbd>SPACE</kbd><span>Dodge with a burst of stamina</span></div><div><kbd>E</kbd><span>Signature special (build meter by fighting)</span></div><div><kbd>ESC</kbd><span>Pause / resume</span></div></div><p class="small-note">Local 1v1: Player 2 uses arrow keys, numpad 1/2 for punch/kick, numpad 3 to block, Right Shift to dodge and numpad 0 for special.</p></div></section>
+    <div class="match-announce" id="match-announce"><span>THE HOUSE IS IN SESSION</span></div>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>

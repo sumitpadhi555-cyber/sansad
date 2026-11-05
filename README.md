@@ -1,19 +1,30 @@
-# sansad
+# Sansad Showdown — The Great Kursi Fight
 
-<!-- omgithub:readme:start -->
-## 🚀 Build, play, and remix with OMGithub
+A small browser-based 3D parliamentary satire fighting game built with Three.js and Vite. Choose a contender, take the floor, and settle the debate in a procedural arena.
 
-**Remixed using [OMGithub.com](https://go.ondev.store/).**
+## Run locally
 
-[![OMGithub](https://img.shields.io/badge/OMGithub-Open%20project-orange?style=for-the-badge)](https://go.ondev.store/sumitpadhi555-cyber/sansad)
-[![GitHub](https://img.shields.io/badge/GitHub-Source-181717?logo=github&style=for-the-badge)](https://github.com/sumitpadhi555-cyber/sansad)
+```sh
+npm install
+npm run dev
+```
 
-- 🎮 [Open the project](https://go.ondev.store/sumitpadhi555-cyber/sansad).
-- ✨ [Remix this project](https://go.ondev.store/sumitpadhi555-cyber/sansad?remix=1).
-- 💻 [Explore the source](https://github.com/sumitpadhi555-cyber/sansad).
-- 🛠️ [Check build runs](https://github.com/sumitpadhi555-cyber/sansad/actions).
-- 🐛 [Report an issue](https://github.com/sumitpadhi555-cyber/sansad/issues).
-- 👤 [Explore the creator's projects](https://go.ondev.store/sumitpadhi555-cyber).
-- 🌍 [Create with OMGithub](https://go.ondev.store/).
-- 🧬 [Explore the remix source](https://github.com/sumitpadhi555-cyber/sansad).
-<!-- omgithub:readme:end -->
+Open the URL printed by Vite. To create a production web build, run `npm run build`; the static output is written to `dist/`.
+
+## Included
+
+- Nine playable public-figure-inspired contenders, with distinct profiles and stats. Mahatma Gandhi is represented as a playful historical-inspired, nonviolent character whose attacks are framed as gentle persuasion.
+- Three selectable procedural arenas.
+- Quick Fight, Story, Tournament, Training, and Local 1v1 modes. Story, Tournament, Quick Fight, and Training use CPU opponents; Local 1v1 is two-player on one keyboard.
+- Punch, kick, guard, dodge, meter-powered special moves, health/momentum meters, a 60-second timer, pause/results screens, basic CPU behavior, and synthesized sound effects.
+- Keyboard, touch controls, and mouse/touch camera drag support.
+
+### Controls
+
+- Player 1: **WASD** move, **J** punch, **K** kick, hold **L** guard, **Space** dodge, **I** special.
+- Local 1v1 Player 2: **Arrow keys** move, **Numpad 1** punch, **Numpad 2** kick, hold **Numpad 3** guard, **Numpad 0** dodge, **Numpad 5** special.
+- On touch screens, use the on-screen joystick and action buttons.
+
+## Current limitations
+
+This is a playable prototype, not an AAA-quality or store-ready release. The characters, arenas, and effects are procedural low-poly graphics; there are no authored production-quality character models, motion-captured animations, or recorded voice/music assets. Online multiplayer is not implemented. There is no Android/Capacitor packaging, Android 15/64-bit ARM configuration, signed APK, or device-tested mobile release in this repository. Do not treat the web build as an Android APK.

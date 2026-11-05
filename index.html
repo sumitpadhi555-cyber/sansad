@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#101210" />
+    <meta name="description" content="A satirical parliamentary arena fighter. Choose your side, take the floor, and settle the debate." />
+    <title>Sansad Showdown — The Great Kursi Fight</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23101210'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='Georgia,serif' font-size='48' fill='%23d6ad61'%3ES%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game" aria-label="3D parliamentary fighting arena"></canvas>
+      <div class="grain"></div>
+      <header class="topbar"><a class="brand" href="#" aria-label="Sansad Showdown home"><span class="brand-mark">S</span><span>SANSAD <b>SHOWDOWN</b></span></a><span class="edition">THE GREAT KURSI FIGHT <i>•</i> SEASON 01</span><button class="icon-btn" id="sound-toggle" title="Toggle sound">♫ <span>SOUND ON</span></button></header>
+      <main id="menu" class="screen">
+        <section class="hero"><div class="eyebrow"><span class="live-dot"></span> THE HOUSE IS IN SESSION</div><h1>WORDS HAVE<br /><em> CONSEQUENCES.</em></h1><p class="hero-copy">A satirical arena showdown where the only thing louder than the opposition… is the opposition.</p>
+          <div class="menu-actions"><button class="primary-btn" data-mode="quick">TAKE THE FLOOR <span>↗</span></button><button class="secondary-btn" data-mode="story">STORY MODE</button></div>
+          <div class="mode-row"><button data-mode="tournament">TOURNAMENT <span>→</span></button><button data-mode="local">LOCAL 1V1 <span>→</span></button><button data-mode="training">TRAINING <span>→</span></button></div>
+        </section>
+        <footer class="menu-footer"><span>AN ORIGINAL SATIRICAL FIGHTING GAME</span><span>DEBATE RESPONSIBLY <b>✳</b></span></footer>
+      </main>
+      <section id="select" class="overlay hidden">
+        <div class="select-head"><button class="back-btn" id="back-menu">← BACK</button><div><div class="eyebrow">ASSEMBLE YOUR ARGUMENT</div><h2>CHOOSE YOUR <em>CONTENDER</em></h2></div><button class="step-label" id="arena-cycle" title="Change arena">ARENA <span>↻</span> <b>LOK SABHA LIGHTS</b></button></div>
+        <div class="select-columns">
+          <div class="selection-panel"><div class="selection-title"><span id="pick-label">PLAYER 1 · SELECT</span><span id="selected-count">0 / 2 SELECTED</span></div><div class="character-grid" id="character-grid"></div></div>
+          <aside class="fighter-card"><div class="fighter-art" id="fighter-art"><span class="art-halo"></span><div class="art-initial" id="art-initial">?</div></div><div class="fighter-info"><div class="eyebrow" id="fighter-role">YOUR NEXT MOVE</div><h3 id="fighter-name">PICK A CONTENDER</h3><p id="fighter-bio">Nine public figures. Nine very different ways to take the floor.</p><div class="stat-list"><div><label>POWER</label><span class="stat-track"><i id="stat-power" style="width:50%"></i></span></div><div><label>AGILITY</label><span class="stat-track"><i id="stat-agility" style="width:50%"></i></span></div><div><label>GUARD</label><span class="stat-track"><i id="stat-guard" style="width:50%"></i></span></div></div><button id="confirm-pick" class="primary-btn confirm-btn" disabled>SELECT CONTENDER <span>→</span></button></div></aside>
+        </div>
+      </section>
+      <section id="fight-ui" class="hidden">
+        <div class="fight-top"><div class="combatant"><div class="nameplate"><span class="side-tag">P1</span><span id="p1-name">CONTENDER</span></div><div class="health-shell"><div id="p1-health" class="health-fill"></div></div><div class="meter"><i id="p1-meter"></i></div></div><div class="round-info"><span id="round-label">ROUND 01</span><strong id="timer">60</strong><small>TAKE THE FLOOR</small></div><div class="combatant enemy"><div class="nameplate"><span id="p2-name">OPPOSITION</span><span class="side-tag">P2</span></div><div class="health-shell"><div id="p2-health" class="health-fill"></div></div><div class="meter"><i id="p2-meter"></i></div></div></div>
+        <div class="fight-message" id="fight-message"></div><button id="pause-button" class="pause-button">Ⅱ</button>
+        <div class="control-hint" id="control-hint">WASD MOVE <b>·</b> J PUNCH <b>·</b> K KICK <b>·</b> L GUARD <b>·</b> SPACE DODGE <b>·</b> I SPECIAL</div>
+        <div class="touch-controls" id="touch-controls"><div class="touch-stick" id="touch-stick"><span></span></div><div class="touch-actions"><button data-action="dodge">DODGE</button><button data-action="block">GUARD</button><button data-action="punch">PUNCH</button><button data-action="kick">KICK</button><button class="special-touch" data-action="special">SPECIAL</button></div></div>
+      </section>
+      <section id="result" class="overlay hidden"><div class="result-box"><div class="eyebrow">THE HOUSE HAS DECIDED</div><h2 id="result-title">FLOOR <em>HELD.</em></h2><p id="result-subtitle">An unforgettable debate.</p><div class="result-actions"><button class="primary-btn" id="rematch">REMATCH <span>↻</span></button><button class="secondary-btn" id="result-menu">MAIN MENU</button></div></div></section>
+      <section id="pause" class="overlay hidden"><div class="pause-card"><div class="eyebrow">SESSION PAUSED</div><h2>TAKE A <em>BREATHER.</em></h2><p>Even the House needs a recess.</p><button id="resume" class="primary-btn">BACK TO THE FLOOR <span>→</span></button><button id="pause-menu" class="secondary-btn">END SESSION</button></div></section>
+      <div class="toast" id="toast"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

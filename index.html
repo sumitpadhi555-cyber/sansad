@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#101210" />
+    <meta name="description" content="A colorful, fictional parliamentary arena brawler. Pick a fighter, make your case, and claim the Kursi!" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Sansad Showdown — The Great Kursi Fight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="game-root">
+      <canvas id="scene" aria-label="Three-dimensional Sansad Showdown arena"></canvas>
+      <div class="grain"></div>
+      <header class="topbar">
+        <button class="brand" id="brandHome" aria-label="Return to main menu"><span class="brand-mark">SS</span><span>SANSAD <b>SHOWDOWN</b></span></button>
+        <div class="top-meta"><span class="live-dot"></span> THE GREAT KURSI FIGHT <span class="edition">FAN-MADE EDITION · v1.0</span></div>
+        <button class="icon-btn" id="soundToggle" aria-label="Toggle sound">♪ <span>SOUND ON</span></button>
+      </header>
+
+      <main id="mainMenu" class="screen menu-screen">
+        <div class="hero-copy">
+          <div class="eyebrow"><i>✦</i> THE FLOOR IS YOURS</div>
+          <h1>MAKE YOUR<br /><em>CASE.</em></h1>
+          <p class="hero-desc">A wildly fictional, wonderfully theatrical arena brawler. Step into the chamber, settle the debate, and claim the Kursi.</p>
+          <button class="primary-btn" id="playNow"><span>ENTER THE CHAMBER</span><b>↗</b></button>
+          <div class="hero-foot"><span>✦ &nbsp;9 DISTINCT FIGHTERS</span><span>✦ &nbsp;3 ORIGINAL ARENAS</span></div>
+        </div>
+        <div class="right-rail">
+          <div class="season-tag"><span>SEASON 01</span><b>PARLIAMENT<br />OF MAYHEM</b><div class="season-line"></div><small>NO FILIBUSTERING. JUST FISTICUFFS.</small></div>
+          <div class="controls-hint"><div class="hint-title">READY YOUR ARGUMENT</div><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>MOVE</span></div><div><kbd>J</kbd><kbd>K</kbd><kbd>L</kbd><span>PUNCH · KICK · BLOCK</span></div><div><kbd>SPACE</kbd><span>DODGE</span></div></div>
+        </div>
+      </main>
+
+      <section id="selectScreen" class="screen select-screen hidden">
+        <div class="select-heading"><div><div class="eyebrow">01 / CHOOSE YOUR VOICE</div><h2>SELECT A <em>FIGHTER</em></h2></div><button class="text-btn" id="backToMenu">← MAIN MENU</button></div>
+        <div class="select-layout">
+          <div class="roster" id="roster"></div>
+          <article class="fighter-card"><div class="card-label">YOUR REPRESENTATIVE <span>✦ FICTIONAL SATIRE</span></div><div class="fighter-portrait" id="fighterPortrait"><div class="portrait-glow"></div><div class="portrait-initial" id="portraitInitial">N</div><div class="portrait-ring"></div></div><div class="fighter-info"><div class="fighter-number" id="fighterNumber">01 / 09</div><h3 id="fighterName">Narendra Modi</h3><div class="fighter-title" id="fighterTitle">THE PEOPLE'S ORATOR</div><p id="fighterBio">A commanding presence with a flair for grand entrances and a perfectly timed counterpoint.</p><div class="stats" id="fighterStats"></div><div class="special-label">SIGNATURE MOVE</div><div class="special-move" id="fighterSpecial">THE FLOOR SPEECH <span>✦</span></div></div></article>
+        </div>
+        <div class="select-footer"><div class="selection-note"><span>← →</span> BROWSE THE ROSTER <i>·</i> PICK YOUR DEBATER</div><button class="primary-btn" id="continueBtn"><span>CHOOSE ARENA</span><b>↗</b></button></div>
+      </section>
+
+      <section id="arenaScreen" class="screen arena-screen hidden">
+        <div class="select-heading"><div><div class="eyebrow">02 / SET THE STAGE</div><h2>CHOOSE YOUR <em>ARENA</em></h2></div><button class="text-btn" id="backToRoster">← CHANGE FIGHTER</button></div>
+        <div id="arenaCards" class="arena-cards"></div>
+        <div class="mode-row"><div><div class="eyebrow">PICK A MATCH</div><div class="mode-select" id="modeSelect"></div></div><div class="difficulty"><label for="difficultySelect">CPU CHALLENGE</label><select id="difficultySelect"><option value="easy">EASY</option><option value="normal" selected>NORMAL</option><option value="hard">HARD</option></select></div></div>
+        <div class="select-footer"><div class="selection-note">A FICTIONAL CELEBRATION OF DEBATE, DRAMA & DODGING</div><button class="primary-btn" id="startFight"><span>FIGHT FOR THE KURSI</span><b>↗</b></button></div>
+      </section>
+
+      <section id="fightUI" class="fight-ui hidden">
+        <div class="fight-top"><div class="fighter-hud left-hud"><div class="hud-name" id="hudPlayerName">PLAYER 1</div><div class="health-track"><div class="health-fill player-health" id="playerHealth"></div></div><div class="stamina-track"><div class="stamina-fill" id="playerStamina"></div></div><div class="hud-tag" id="playerTag">THE PEOPLE'S ORATOR</div></div><div class="round-info"><div class="round-label">KURSI BOUT</div><div class="timer" id="fightTimer">90</div><div class="round-count" id="roundLabel">ROUND 1</div></div><div class="fighter-hud right-hud"><div class="hud-name" id="hudCpuName">OPPOSITION</div><div class="health-track"><div class="health-fill enemy-health" id="enemyHealth"></div></div><div class="stamina-track"><div class="stamina-fill enemy-stamina" id="enemyStamina"></div></div><div class="hud-tag" id="enemyTag">A VERY STRONG OPINION</div></div></div>
+        <div id="fightCallout" class="fight-callout"></div>
+        <button class="pause-button" id="pauseBtn" aria-label="Pause match">Ⅱ</button>
+        <div class="fight-bottom"><div class="combo-readout" id="comboReadout"></div><div class="fight-tip">LAND YOUR POINTS. WATCH YOUR STAMINA.</div></div>
+        <div class="mobile-controls" id="mobileControls"><div class="move-pad"><div class="pad-cross"><button data-move="up">▲</button><button data-move="left">◀</button><button data-move="down">▼</button><button data-move="right">▶</button></div><span>MOVE</span></div><div class="action-pad"><button data-action="punch" class="action punch"><b>J</b><span>PUNCH</span></button><button data-action="kick" class="action kick"><b>K</b><span>KICK</span></button><button data-action="block" class="action block"><b>L</b><span>BLOCK</span></button><button data-action="dodge" class="action dodge"><b>␣</b><span>DODGE</span></button><button data-action="special" class="action special"><b>U</b><span>SPECIAL</span></button></div></div>
+      </section>
+
+      <div id="pauseOverlay" class="overlay hidden"><div class="dialog"><div class="eyebrow">TAKE A BREATHER</div><h2>MATCH <em>PAUSED</em></h2><p>The chamber will wait.</p><button id="resumeBtn" class="primary-btn"><span>BACK TO IT</span><b>↗</b></button><button id="quitBtn" class="text-btn">END THIS BOUT</button></div></div>
+      <div id="resultOverlay" class="overlay hidden"><div class="dialog result-dialog"><div class="eyebrow" id="resultEyebrow">THE FLOOR HAS SPOKEN</div><h2 id="resultTitle">KURSI <em>CLAIMED</em></h2><p id="resultCopy">A brilliant performance in the chamber.</p><div class="result-stats" id="resultStats"></div><button id="rematchBtn" class="primary-btn"><span>RUN IT BACK</span><b>↗</b></button><button id="resultMenuBtn" class="text-btn">RETURN TO MENU</button></div></div>
+      <div id="toast" class="toast"></div>
+      <footer class="legal"><span>AN ORIGINAL, FICTIONAL SATIRE · NO REAL-WORLD AFFILIATION OR ENDORSEMENT</span><span>MADE FOR THE LOVE OF A GOOD DEBATE <b>✦</b></span></footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

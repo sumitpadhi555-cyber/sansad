@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const CHARACTERS = [
   {name:'Narendra Modi', title:'THE ORATOR', colors:['#e59b35','#f5e9d0'], skin:'#bf8768', hair:'#34312b', style:'Precision pressure · podium command', special:'Janadesh Rush', bio:'Measured footwork and commanding speeches turn into a disciplined, forward-driving game.'},
@@ -16,6 +17,17 @@ const ARENAS=[
  {name:'Monsoon Session',tag:'RIVERFRONT PAVILION',desc:'An open-air debating ground under a dramatic monsoon sky.',type:'monsoon'},
  {name:'The Constituency',tag:'OLD CITY GROUNDS',desc:'A lively neighborhood arena where the crowd is never neutral.',type:'constituency'}
 ];
+const CHARACTER_ASSETS = {
+  'Narendra Modi':'Narendra_Modi.glb',
+  'Rahul Gandhi':'Rahul_Gandhi.glb',
+  'Donald Trump':'Donald_Trump.glb',
+  'Yogi Adityanath':'Yogi_Adityanath.glb',
+  'Nitin Gadkari':'Nitin_Gadkari.glb',
+  'Ravi Kishan':'Ravi_Kishan.glb',
+  'Lalu Prasad Yadav':'Lalu_Prasad_Yadav.glb',
+  'Mahatma Gandhi':'Mahatma_Gandhi.glb'
+};
+const CHARACTER_MODELS = new Map();
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const state={screen:'main-menu', mode:'quick', selected:0, arena:0, running:false, paused:false, ended:false, time:90, rounds:0, keys:new Set(), fighters:[], sound:true, matchNo:0, storyPos:0, training:false};
 let scene,camera,renderer,clock,worldGroup,stageGroup, fightersGroup, particlesGroup, resizeObserver, audioCtx, lastTimestamp=0, toastTimer;
@@ -157,6 +169,45 @@ function selectCharacter(i){state.selected=i;$$('.character-card').forEach(el=>e
 function buildArenaCards(){let grid=$('#arena-grid');grid.innerHTML='';ARENAS.forEach((a,i)=>{let b=document.createElement('button');b.className='arena-card'+(i===state.arena?' selected':'');b.innerHTML=`<div class="arena-art"></div><span class="arena-tag">${a.tag}</span><div class="arena-info"><small>ARENA 0${i+1}</small><strong>${a.name}</strong><p>${a.desc}</p></div>`;b.onclick=()=>{state.arena=i;$$('.arena-card').forEach((el,j)=>el.classList.toggle('selected',j===i));makeStage(i);sound('select')};grid.append(b)});}
 
 const fabricMaps=new Map();
+const gltfLoader=new GLTFLoader();
+async function loadCharacterAssets(){
+  await Promise.all(Object.entries(CHARACTER_ASSETS).map(async([name,file])=>{
+    try{CHARACTER_MODELS.set(name,await gltfLoader.loadAsync(`assets/characters/${file}`));}
+    catch(error){console.warn(`Could not load ${name}'s model; using the built-in figure.`,error);}
+  }));
+}
+function initializeFighterState(root,index,player){
+  Object.assign(root.userData,{index,player,health:100,stamina:100,meter:0,cooldown:0,action:'idle',actionT:0,guard:0,dodge:0,hitFlash:0,combo:0,lastHit:0,aiWait:.7,lane:0});
+}
+function addSuppliedModel(root,name){
+  const source=CHARACTER_MODELS.get(name);if(!source)return false;
+  const model=source.scene.clone(true);model.updateMatrixWorld(true);
+  const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());
+  const scale=2.28/Math.max(size.y,.001);model.scale.setScalar(scale);
+  model.position.set(-center.x*scale,-bounds.min.y*scale,-center.z*scale);
+  model.traverse(object=>{if(object.isMesh){object.castShadow=true;object.receiveShadow=true;}});
+  root.add(model);
+  const clips=new Map();
+  for(const sourceClip of source.animations){
+    const clip=sourceClip.clone();
+    if(['MoveForward','MoveBackward'].includes(clip.name))clip.tracks=clip.tracks.filter(track=>!track.name.endsWith('.position'));
+    clips.set(clip.name,clip);
+  }
+  root.userData.modelRoot=model;root.userData.mixer=new THREE.AnimationMixer(model);root.userData.clips=clips;root.userData.clipActions=new Map();
+  setFighterAnimation(root,'Idle');
+  return true;
+}
+function setFighterAnimation(f,clipName){
+  const d=f.userData;if(!d.mixer||d.activeClip===clipName||!d.clips.has(clipName))return;
+  const previous=d.clipActions.get(d.activeClip),clip=d.clips.get(clipName);
+  let next=d.clipActions.get(clipName);
+  if(!next){next=d.mixer.clipAction(clip);d.clipActions.set(clipName,next);}
+  next.reset();next.enabled=true;next.setEffectiveWeight(1);
+  if(['Idle','MoveForward','MoveBackward'].includes(clipName))next.setLoop(THREE.LoopRepeat,Infinity);
+  else{next.setLoop(THREE.LoopOnce,1);next.clampWhenFinished=true;}
+  next.fadeIn(.12).play();if(previous&&previous!==next)previous.fadeOut(.12);
+  d.activeClip=clipName;
+}
 function fabricMaterial(color){
   if(!fabricMaps.has(color)){
     const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;
@@ -168,7 +219,7 @@ function fabricMaterial(color){
   return new THREE.MeshStandardMaterial({map:fabricMaps.get(color),color:'#ffffff',roughness:.88});
 }
 function createFighter(index,player){
-  const data=CHARACTERS[index],root=new THREE.Group();root.userData={index,player};fightersGroup.add(root);
+  const data=CHARACTERS[index],root=new THREE.Group();initializeFighterState(root,index,player);fightersGroup.add(root);
   const cloth=fabricMaterial(data.colors[0]),trim=fabricMaterial(data.colors[1]),skin=mat(data.skin,.76),hair=mat(data.hair,.86),dark=mat('#29231f',.78),shoe=mat('#282526',.68),gold=mat('#c7a355',.34,.3),white=mat('#f3e8d7',.5);
   const body=new THREE.Group();root.add(body);root.userData.body=body;
   // Tailored torso, undershirt, collar, lapels, buttons and stitched seams.
@@ -235,7 +286,8 @@ function createFighter(index,player){
   // Fine metallic trim and a soft contact shadow ground the collectible-figure look.
   let belt=mesh(new THREE.TorusGeometry(.34,.035,8,28),gold,body,[0,.6,0]);belt.rotation.x=Math.PI/2;
   let sh=new THREE.Mesh(new THREE.CircleGeometry(.65,32),new THREE.MeshBasicMaterial({color:'#050505',transparent:true,opacity:.32,depthWrite:false}));sh.rotation.x=-Math.PI/2;sh.position.y=.008;root.add(sh);
-  root.position.set(player===1?-2.25:2.25,0,player===1?.4:-.4);root.userData.health=100;root.userData.stamina=100;root.userData.meter=0;root.userData.cooldown=0;root.userData.action='idle';root.userData.actionT=0;root.userData.guard=0;root.userData.dodge=0;root.userData.hitFlash=0;root.userData.combo=0;root.userData.lastHit=0;root.userData.aiWait=.7;root.userData.lane=0;
+  if(addSuppliedModel(root,data.name))body.visible=false;
+  root.position.set(player===1?-2.25:2.25,0,player===1?.4:-.4);
   return root;
 }
 function startMatch(){
@@ -275,17 +327,23 @@ function resolveAttack(f,multiplier,special){let target=state.fighters[1-f.userD
 function getActionInput(player){let k=state.keys;if(player===1){return{move:new THREE.Vector3((k.has('d')?1:0)-(k.has('a')?1:0),0,(k.has('s')?1:0)-(k.has('w')?1:0)),block:k.has('l')||k.has('shift'),punch:k.has('j'),kick:k.has('k'),dodge:k.has(' '),special:k.has('e')};}
  return{move:new THREE.Vector3((k.has('arrowright')?1:0)-(k.has('arrowleft')?1:0),0,(k.has('arrowdown')?1:0)-(k.has('arrowup')?1:0)),block:k.has('3')||k.has('rightshift'),punch:k.has('1'),kick:k.has('2'),dodge:k.has('enter'),special:k.has('0')};}
 function runInput(f,dt){let p=f.userData.player,d=f.userData,input=getActionInput(p);if(p===2&&state.mode!=='local'){runAI(f,state.fighters[0],dt);return;}
- if(input.move.lengthSq()>.01){let m=input.move.normalize();f.position.addScaledVector(m,dt*(d.dodge>0?7:3.4));f.position.x=THREE.MathUtils.clamp(f.position.x,-5.7,5.7);f.position.z=THREE.MathUtils.clamp(f.position.z,-3.9,3.8);if(d.action==='idle'||d.action==='walk')d.action='walk';}else if(d.action==='walk')d.action='idle';
+ if(input.move.lengthSq()>.01){let m=input.move.normalize();let opponent=state.fighters.find(x=>x!==f);d.moveForward=!opponent||m.x*(opponent.position.x>=f.position.x?1:-1)>=0;f.position.addScaledVector(m,dt*(d.dodge>0?7:3.4));f.position.x=THREE.MathUtils.clamp(f.position.x,-5.7,5.7);f.position.z=THREE.MathUtils.clamp(f.position.z,-3.9,3.8);if(d.action==='idle'||d.action==='walk')d.action='walk';}else if(d.action==='walk')d.action='idle';
  if(input.block)action(f,'block');else if(input.special)action(f,'special');else if(input.punch)action(f,'punch');else if(input.kick)action(f,'kick');else if(input.dodge)action(f,'dodge');
 }
 function runAI(cpu,player,dt){let d=cpu.userData,dist=cpu.position.distanceTo(player.position);d.aiWait-=dt;
  if(player.userData.action==='punch'||player.userData.action==='kick'||player.userData.action==='special'){
   if(d.aiWait<=0&&dist<2.8&&Math.random()<.54){if(Math.random()<.56)action(cpu,'block');else action(cpu,'dodge');d.aiWait=.28+Math.random()*.38;return;}}
  if(d.aiWait<=0){if(d.meter>=100&&dist<3.1&&Math.random()<.48)action(cpu,'special');else if(dist<1.85){let r=Math.random();if(r<.39)action(cpu,'punch');else if(r<.72)action(cpu,'kick');else action(cpu,'block');}else if(Math.random()<.18)action(cpu,'dodge');d.aiWait=.38+Math.random()*.6;}
- if(dist>1.55&&d.action!=='special'&&d.action!=='kick'){let toward=player.position.clone().sub(cpu.position);toward.y=0;toward.normalize();cpu.position.addScaledVector(toward,dt*1.65);cpu.position.x=THREE.MathUtils.clamp(cpu.position.x,-5.5,5.5);cpu.position.z=THREE.MathUtils.clamp(cpu.position.z,-3.6,3.6);if(d.action==='idle')d.action='walk';}else if(d.action==='walk')d.action='idle';
+ if(dist>1.55&&d.action!=='special'&&d.action!=='kick'){let toward=player.position.clone().sub(cpu.position);toward.y=0;toward.normalize();d.moveForward=true;cpu.position.addScaledVector(toward,dt*1.65);cpu.position.x=THREE.MathUtils.clamp(cpu.position.x,-5.5,5.5);cpu.position.z=THREE.MathUtils.clamp(cpu.position.z,-3.6,3.6);if(d.action==='idle')d.action='walk';}else if(d.action==='walk')d.action='idle';
 }
 function animateFighter(f,dt,time){let d=f.userData,body=d.body,arms=d.arms,elbows=d.elbows,legs=d.legs,knees=d.knees;d.cooldown=Math.max(0,d.cooldown-dt);d.guard=Math.max(0,d.guard-dt);d.dodge=Math.max(0,d.dodge-dt);d.actionT=Math.max(0,d.actionT-dt);d.hitFlash=Math.max(0,d.hitFlash-dt);d.stamina=Math.min(100,d.stamina+dt*(d.action==='idle'?8:4));
  let opponent=state.fighters.find(x=>x!==f);if(opponent){let target=opponent.position.x-f.position.x;f.rotation.y=THREE.MathUtils.lerp(f.rotation.y,target>=0?Math.PI/2:-Math.PI/2,Math.min(1,dt*8));}
+ if(d.mixer){
+  const clips={idle:'Idle',walk:d.moveForward===false?'MoveBackward':'MoveForward',punch:'Punch',kick:'Kick',special:'Combo',block:'Block',dodge:'Dodge',hit:'Knockout'};
+  setFighterAnimation(f,clips[d.action]||'Idle');d.mixer.update(dt);
+  if(d.actionT<=0&&['punch','kick','special','hit','dodge','block'].includes(d.action))d.action='idle';
+  return;
+ }
  let walk=d.action==='walk',swing=0;if(d.action==='punch')swing=1-d.actionT/.28;if(d.action==='kick')swing=1-d.actionT/.42;if(d.action==='special')swing=1-d.actionT/.7;
  const gait=time*9+(f===state.fighters[1]?1:0),stepA=walk?Math.sin(gait):0,stepB=walk?Math.sin(gait+Math.PI):0;
  body.position.y=walk?Math.abs(Math.sin(time*10+(f===state.fighters[1]?1:0)))*.07:Math.sin(time*2.2+(d.player*2))*.018;
@@ -306,7 +364,8 @@ function updateGame(dt,time){if(!state.running||state.paused||state.ended)return
  for(let i=particlesGroup.children.length-1;i>=0;i--){let p=particlesGroup.children[i];p.userData.life-=dt;p.position.addScaledVector(p.userData.vel,dt);p.userData.vel.y-=5*dt;p.scale.multiplyScalar(.985);if(p.userData.life<=0){particlesGroup.remove(p);p.geometry.dispose();p.material.dispose();}}
  updateHud();}
 function renderLoop(){requestAnimationFrame(renderLoop);let dt=Math.min(clock.getDelta(),.04),t=clock.elapsedTime;updateGame(dt,t);
- if(state.fighters.length===2&&state.running){let mid=state.fighters[0].position.clone().add(state.fighters[1].position).multiplyScalar(.5);let desired=V(mid.x*.13,7.3,17.8+Math.abs(state.fighters[0].position.x-state.fighters[1].position.x)*.12);camera.position.lerp(desired,dt*1.2);camera.lookAt(mid.x*.15,1.05,0);}
+ if(!state.running&&!state.paused)state.fighters.forEach(f=>{if(f.userData.mixer){setFighterAnimation(f,'Idle');f.userData.mixer.update(dt);}});
+ if(state.fighters.length===2&&state.running){let mid=state.fighters[0].position.clone().add(state.fighters[1].position).multiplyScalar(.5),separation=Math.abs(state.fighters[0].position.x-state.fighters[1].position.x);let desired=V(mid.x*.13,5.6,14.5+separation*.45);camera.position.lerp(desired,dt*1.2);camera.lookAt(mid.x*.15,.95,0);}
  renderer.render(scene,camera);}
 
 function showScreen(name){$$('.screen').forEach(el=>el.classList.toggle('visible',el.id===name));state.screen=name;}
@@ -325,7 +384,7 @@ function bindUI(){
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.running&&!state.paused)togglePause();});
 }
 function toggleSound(){state.sound=!state.sound;$('#sound-toggle').innerHTML=state.sound?'♫ <span>SOUND ON</span>':'♫ <span>SOUND OFF</span>';sound(state.sound?'select':'');}
-function boot(){init3d();makeStage(0);buildCharacterGrid();buildArenaCards();bindUI();state.fighters=[createFighter(0,1),createFighter(8,2)];state.fighters[0].position.set(1.8,0,0);state.fighters[1].position.set(4.5,0,-.8);setTimeout(()=>$('#loading').classList.add('done'),550);setTimeout(()=>$('#loading').remove(),1200);}
-boot();
+async function boot(){init3d();makeStage(0);buildCharacterGrid();buildArenaCards();bindUI();await loadCharacterAssets();state.fighters=[createFighter(0,1),createFighter(8,2)];state.fighters[0].position.set(1.8,0,0);state.fighters[1].position.set(4.5,0,-.8);setTimeout(()=>$('#loading').classList.add('done'),550);setTimeout(()=>$('#loading').remove(),1200);}
+boot().catch(error=>{console.error('Sansad Showdown could not start.',error);$('#loading').classList.add('done');});
 function spawnImpact(pos,color,guard){for(let i=0;i<(guard?7:13);i++){let m=mesh(new THREE.SphereGeometry(.045+Math.random()*.06,7,6),mat(color,.45),particlesGroup,[pos.x,pos.y+1+Math.random()*.8,pos.z]);let a=Math.random()*Math.PI*2,s=.7+Math.random()*2.2;m.userData.vel=V(Math.cos(a)*s,Math.random()*2,s*Math.sin(a));m.userData.life=.35+Math.random()*.3;}}
 function emitBurst(pos,color){for(let i=0;i<38;i++){let m=mesh(new THREE.SphereGeometry(.04+Math.random()*.08,6,5),mat(color,.45),particlesGroup,[pos.x,pos.y+.4+Math.random()*1.8,pos.z]);let a=Math.random()*6.28,s=.8+Math.random()*4;m.userData.vel=V(Math.cos(a)*s,Math.random()*3,s*Math.sin(a));m.userData.life=.45+Math.random()*.6;}}

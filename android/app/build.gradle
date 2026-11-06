@@ -1,0 +1,36 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.sansadshowdown.game'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.sansadshowdown.game'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+    }
+}
+
+def webRoot = rootProject.projectDir.parentFile
+def generatedWebAssets = layout.buildDirectory.dir('generated/webAssets')
+
+tasks.register('copyWebAssets', Copy) {
+    from(webRoot) {
+        include 'index.html', 'game.js', 'style.css', 'vendor/**'
+    }
+    into(generatedWebAssets.map { it.dir('www') })
+}
+
+android.sourceSets.main.assets.srcDir(generatedWebAssets.get().asFile)
+
+tasks.named('preBuild').configure {
+    dependsOn tasks.named('copyWebAssets')
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.12.1'
+}

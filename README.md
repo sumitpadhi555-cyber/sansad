@@ -23,6 +23,17 @@ gradle assembleDebug
 
 The APK is written to `android/app/build/outputs/apk/debug/app-debug.apk`. Install it on a connected device with `adb install -r android/app/build/outputs/apk/debug/app-debug.apk`.
 
+### Publish to GitHub Packages
+
+The Android module can publish the debug APK as the Maven artifact `com.sansadshowdown:sansad-showdown:1.0` to this repository's GitHub Packages registry. Create a GitHub **classic personal access token** with `write:packages` permission and provide it as an environment variable (do not commit or share the token):
+
+```sh
+cd android
+GITHUB_ACTOR=YOUR_GITHUB_USERNAME GITHUB_TOKEN=YOUR_TOKEN gradle :app:publishApkPublicationToGitHubPackagesRepository
+```
+
+The published APK is available from the repository's **Packages** page. Publishing requires write access to `sumitpadhi555-cyber/sansad`.
+
 ## Controls
 
 - **Player 1:** WASD to move, J to punch, K to kick, L or Shift to block, Space to dodge, E for a special, Esc to pause.

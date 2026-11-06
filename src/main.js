@@ -237,6 +237,7 @@ function animateFighter(p, dt, t) {
   u.dodge = Math.max(0, u.dodge - dt);
   u.hit = Math.max(0, u.hit - dt);
   u.stamina = Math.min(100, u.stamina + dt * 11);
+  if (mode === 'training') u.health = Math.min(100, u.health + dt * 4);
   const walking = Math.abs(u.moveX || 0) + Math.abs(u.moveZ || 0);
   parts.body.position.y = Math.sin(t * 8 + u.side) * .035 * walking;
   if (u.attack > 0 && u.attackType === 'punch') parts.arms[1].rotation.x = -.9;
@@ -261,10 +262,18 @@ function endFight(winner) {
   title.innerHTML = p1Won ? 'FLOOR <em>HELD.</em>' : 'THE HOUSE <em>DECIDED.</em>';
   subtitle.textContent = `${winner.userData.data.name} takes the floor${mode === 'local' ? '.' : p1Won ? '!' : '.'}`;
   const rematch = byId('rematch');
-  const canAdvance = p1Won && ((mode === 'story' && storyWins < 3) || (mode === 'tournament' && tournamentWins < 3));
-  rematch.innerHTML = canAdvance ? 'NEXT MATCH <span>→</span>' : 'REMATCH <span>↻</span>';
+  const seriesComplete = p1Won && ((mode === 'story' && storyWins >= 3) || (mode === 'tournament' && tournamentWins >= 3));
+  const canAdvance = p1Won && !seriesComplete && (mode === 'story' || mode === 'tournament');
+  if (seriesComplete) {
+    title.innerHTML = mode === 'story' ? 'HOUSE <em>CHAMPION.</em>' : 'BRACKET <em>CONQUERED.</em>';
+    subtitle.textContent = `${winner.userData.data.name} wins the ${mode} series!`;
+  }
+  rematch.innerHTML = canAdvance ? 'NEXT MATCH <span>→</span>' : seriesComplete ? 'PLAY AGAIN <span>↻</span>' : 'REMATCH <span>↻</span>';
   rematch.onclick = () => {
-    if (canAdvance) { startFight(); return; }
+    if (seriesComplete) {
+      storyWins = 0;
+      tournamentWins = 0;
+    }
     startFight();
   };
   showScreen('result');
@@ -383,9 +392,13 @@ function frame(now) {
         const z = (keys.ArrowDown ? 1 : 0) - (keys.ArrowUp ? 1 : 0);
         if (x || z) { u.moveX = x; u.moveZ = z; movePlayer(player, x, z, dt); }
       } else cpuThink(player, foe, dt);
+      if (u.dodge > 0) {
+        movePlayer(player, player.position.x - foe.position.x, player.position.z - foe.position.z, dt);
+      }
       animateFighter(player, dt, t);
       doHit(player, foe);
     }
+    if (mode === 'training') updateHealth();
     const midpoint = (players[0].position.x + players[1].position.x) / 2;
     camera.position.x = THREE.MathUtils.damp(camera.position.x, midpoint * .22 + viewAngle * 5, 2, dt);
     camera.lookAt(midpoint * .18, 1.15, 0);

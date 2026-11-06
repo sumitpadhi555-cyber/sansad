@@ -2,17 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#101114" />
   <title>Sansad Showdown — The Great Kursi Fight</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="style.css" />
-  <script type="importmap">
-    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
-  </script>
+  <script type="module" crossorigin src="./assets/index-DBpmU1Bu.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BRcsgs_2.css">
 </head>
 <body>
   <main id="game-shell">
@@ -54,6 +52,5 @@
     <section id="how-panel" class="modal-screen"><div class="modal-card how-card"><button class="modal-close" id="how-close">×</button><div class="eyebrow"><i></i> THE RULES OF ENGAGEMENT</div><h2>FIGHT FAIR-ish.</h2><div class="controls-list"><div><kbd>W A S D</kbd><span>Move around the arena</span></div><div><kbd>J</kbd><span>Quick punch</span></div><div><kbd>K</kbd><span>Heavy kick</span></div><div><kbd>L / SHIFT</kbd><span>Block incoming attacks</span></div><div><kbd>SPACE</kbd><span>Dodge with a burst of stamina</span></div><div><kbd>E</kbd><span>Signature special (build meter by fighting)</span></div><div><kbd>ESC</kbd><span>Pause / resume</span></div></div><p class="small-note">Local 1v1: Player 2 uses arrow keys, numpad 1/2 for punch/kick, numpad 3 to block, Right Shift to dodge and numpad 0 for special.</p></div></section>
     <div class="match-announce" id="match-announce"><span>THE HOUSE IS IN SESSION</span></div>
   </main>
-  <script type="module" src="game.js"></script>
 </body>
 </html>

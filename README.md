@@ -46,9 +46,9 @@ The published APK is available from the repository's **Packages** page. Publishi
 - Quick Fight, Story, Tournament, Local 1v1, and Training selections. Story and Tournament provide lightweight sequential CPU fights rather than a full narrative or competitive bracket.
 - Online Multiplayer appears in the mode menu but is not connected to matchmaking; selecting it displays an unavailable notice.
 
-## Limitations
+## Build status and limitations
 
-This is a web prototype, not a finished mobile release. There is no native Android project, Android 15 configuration, signed APK, online backend, or verified controller support. Characters, crowd, arenas, and sound are procedural/simple prototype assets rather than production-quality authored assets. Browser support and performance vary by device; no mobile-device optimization or release build has been verified.
+The Android project is a fullscreen WebView wrapper that bundles the game and Three.js locally. A debug APK can be built with the command above; it is unsigned for Play Store release. This build has been compiled successfully, but has not been verified on a physical Android device. Online matchmaking and controller support are not implemented. Characters, crowd, arenas, and sound are procedural prototype assets, and performance varies by device.
 
 <!-- omgithub:readme:start -->
 ## 🚀 Build, play, and remix with OMGithub

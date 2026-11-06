@@ -1,6 +1,6 @@
 # Sansad Showdown — The Great Kursi Fight
 
-A small, browser-based 3D political-satire arena brawler. Choose a debater and arena, then fight a CPU opponent, practice, or play a local two-player match. It uses Three.js from jsDelivr and procedural 3D scenery and character models.
+A small, 3D political-satire arena brawler for browsers and landscape Android phones. Choose a debater and arena, then fight a CPU opponent, practice, or play a local two-player match. Three.js is bundled with the app; the game also includes eight stylised character models and procedural scenery.
 
 ## Run locally
 
@@ -10,7 +10,24 @@ From this directory, start any static HTTP server, for example:
 python3 -m http.server 8000
 ```
 
-Open <http://localhost:8000> in a modern browser. An internet connection is required to load Three.js and the web fonts from their CDNs. No build step or package installation is needed. The supplied `start.sh` is an OMGithub runtime entrypoint and expects its `RUNTIME_DIR` environment variable; it is not the general-purpose local run command above.
+Open <http://localhost:8000> in a modern browser. Web fonts are loaded from Google Fonts when online; the game itself runs without them. The supplied `start.sh` is an OMGithub runtime entrypoint and expects its `RUNTIME_DIR` environment variable; it is not the general-purpose local run command above.
+
+## Build the Android APK
+
+Every push to `main`/`master`, and every manual run of **Actions → Android APK**, builds a landscape-oriented debug APK. Download `sansad-showdown-debug-apk` from the completed workflow run's **Artifacts** section. Pushing a version tag such as `v1.0.0` also attaches the APK to a GitHub Release. This is a debug-signed build for testing and sideloading, not a production-signed Play Store release.
+
+To build locally (Node.js 20+, Java 21, and Android SDK/API 35 required):
+
+```sh
+npm ci
+npm run build
+npx cap add android
+npx cap sync android
+python3 scripts/set-android-landscape.py
+(cd android && ./gradlew assembleDebug)
+```
+
+The APK is written to `android/app/build/outputs/apk/debug/app-debug.apk`. The generated `android/` directory is intentionally ignored; GitHub Actions creates it from the checked-in Capacitor config and packages the same web build.
 
 ## Controls
 
@@ -26,7 +43,7 @@ Open <http://localhost:8000> in a modern browser. An internet connection is requ
 
 ## Limitations
 
-This is a web prototype, not a finished mobile release. There is no native Android project, Android 15 configuration, signed APK, online backend, or verified controller support. Characters, crowd, arenas, and sound are procedural/simple prototype assets rather than production-quality authored assets. Browser support and performance vary by device; no mobile-device optimization or release build has been verified.
+This remains a prototype, not a finished mobile release. Android packaging is provided as a landscape debug APK workflow, but there is no production signing setup, online backend, or verified controller support. Characters, crowd, arenas, and sound are stylised/procedural prototype assets rather than production-quality authored assets. Browser support and performance vary by device, and a release build has not been verified.
 
 <!-- omgithub:readme:start -->
 ## 🚀 Build, play, and remix with OMGithub

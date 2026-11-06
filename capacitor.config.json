@@ -1,0 +1,8 @@
+{
+  "appId": "com.sansadshowdown.game",
+  "appName": "Sansad Showdown",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

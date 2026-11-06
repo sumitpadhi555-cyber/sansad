@@ -1,0 +1,56 @@
+{
+  "title": "Eight-character procedural fighting-game action figure roster",
+  "format": "glTF 2.0 binary (.glb)",
+  "characters": [
+    {
+      "name": "Narendra Modi",
+      "file": "Narendra_Modi.glb"
+    },
+    {
+      "name": "Rahul Gandhi",
+      "file": "Rahul_Gandhi.glb"
+    },
+    {
+      "name": "Donald Trump",
+      "file": "Donald_Trump.glb"
+    },
+    {
+      "name": "Yogi Adityanath",
+      "file": "Yogi_Adityanath.glb"
+    },
+    {
+      "name": "Nitin Gadkari",
+      "file": "Nitin_Gadkari.glb"
+    },
+    {
+      "name": "Ravi Kishan",
+      "file": "Ravi_Kishan.glb"
+    },
+    {
+      "name": "Lalu Prasad Yadav",
+      "file": "Lalu_Prasad_Yadav.glb"
+    },
+    {
+      "name": "Mahatma Gandhi",
+      "file": "Mahatma_Gandhi.glb"
+    }
+  ],
+  "animation_clips": [
+    "Idle",
+    "Punch",
+    "Kick",
+    "Jump",
+    "JumpKick",
+    "MoveForward",
+    "MoveBackward",
+    "Block",
+    "Dodge",
+    "Combo",
+    "Knockout",
+    "GetUp"
+  ],
+  "movement_scope": "Forward and backward only. No left/right locomotion animation or control is included.",
+  "rig_note": "Articulated node hierarchy with named joint nodes and separate editable body-part meshes; not a fully weighted skinned Humanoid avatar.",
+  "customisation": "Edit node transforms and materials in a glTF-compatible editor. Replace or refine head meshes and outfit meshes for higher likeness/detail.",
+  "disclaimer": "These are procedural stylised base figures with visual likeness cues, not photorealistic sculpted likenesses. They are original game assets, not official representations."
+}

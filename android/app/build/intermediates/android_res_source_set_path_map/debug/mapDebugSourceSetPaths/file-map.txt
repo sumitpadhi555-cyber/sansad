@@ -1,0 +1,10 @@
+com.sansadshowdown.game.app-core-1.1.0-0 /home/runner/.gradle/caches/9.8.2/transforms/1a9abb112805b620b67266b1bf51b03a/transformed/core-1.1.0/res
+com.sansadshowdown.game.app-webkit-1.12.1-1 /home/runner/.gradle/caches/9.8.2/transforms/43409397c02d49689ce04a6356567b36/transformed/webkit-1.12.1/res
+com.sansadshowdown.game.app-annotation-experimental-1.4.1-2 /home/runner/.gradle/caches/9.8.2/transforms/60c86af33b3d2669ba727b42a86ae321/transformed/annotation-experimental-1.4.1/res
+com.sansadshowdown.game.app-pngs-3 /home/runner/work/sansad/sansad/android/app/build/generated/res/pngs/debug
+com.sansadshowdown.game.app-updated_navigation_xml-4 /home/runner/work/sansad/sansad/android/app/build/generated/updated_navigation_xml/debug
+com.sansadshowdown.game.app-packageDebugResources-5 /home/runner/work/sansad/sansad/android/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.sansadshowdown.game.app-packageDebugResources-6 /home/runner/work/sansad/sansad/android/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.sansadshowdown.game.app-debug-7 /home/runner/work/sansad/sansad/android/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.sansadshowdown.game.app-debug-8 /home/runner/work/sansad/sansad/android/app/src/debug/res
+com.sansadshowdown.game.app-main-9 /home/runner/work/sansad/sansad/android/app/src/main/res

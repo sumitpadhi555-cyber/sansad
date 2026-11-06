@@ -1,6 +1,6 @@
 # Sansad Showdown — The Great Kursi Fight
 
-A small, browser-based 3D political-satire arena brawler. Choose a debater and arena, then fight a CPU opponent, practice, or play a local two-player match. It uses Three.js from jsDelivr and procedural 3D scenery and character models.
+A small, browser-based 3D political-satire arena brawler. Choose a debater and arena, then fight a CPU opponent, practice, or play a local two-player match. It uses a locally bundled Three.js module and procedural 3D scenery and character models.
 
 ## Run locally
 
@@ -10,7 +10,18 @@ From this directory, start any static HTTP server, for example:
 python3 -m http.server 8000
 ```
 
-Open <http://localhost:8000> in a modern browser. An internet connection is required to load Three.js and the web fonts from their CDNs. No build step or package installation is needed. The supplied `start.sh` is an OMGithub runtime entrypoint and expects its `RUNTIME_DIR` environment variable; it is not the general-purpose local run command above.
+Open <http://localhost:8000> in a modern browser. No build step or package installation is needed. The supplied `start.sh` is an OMGithub runtime entrypoint and expects its `RUNTIME_DIR` environment variable; it is not the general-purpose local run command above.
+
+## Build the Android APK
+
+The Android app is a fullscreen WebView wrapper that packages the game and its Three.js module locally, so the game itself works without a network connection. With Java 17, Gradle 9.1 or later, and Android SDK 36 installed, build a debug APK with:
+
+```sh
+cd android
+gradle assembleDebug
+```
+
+The APK is written to `android/app/build/outputs/apk/debug/app-debug.apk`. Install it on a connected device with `adb install -r android/app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Controls
 
